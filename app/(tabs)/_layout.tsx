@@ -1,9 +1,8 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { Colors } from '@/constants/Colors';
+import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -12,10 +11,11 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-      }}>
+        headerShown: false, // Menyembunyikan header di tab navigation
+      }}
+    >
       <Tabs.Screen
-        name="index"
+        name="MovieListScreen"
         options={{
           title: 'Home',
           tabBarIcon: ({ color, focused }) => (
@@ -26,9 +26,18 @@ export default function TabLayout() {
       <Tabs.Screen
         name="explore"
         options={{
-          title: 'Explore',
+          title: 'explore',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+            <TabBarIcon name={focused ? 'search' : 'search-outline'} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="FavoriteMovieScreen"
+        options={{
+          title: 'Favorite',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'save' : 'save-outline'} color={color} />
           ),
         }}
       />
