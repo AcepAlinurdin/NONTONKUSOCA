@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: 16,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#192931',
   },
   imageContainer: {
     position: 'relative',
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   favoriteButton: {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#192931',
     borderRadius: 8,
     paddingVertical: 10,
     paddingHorizontal: 16,

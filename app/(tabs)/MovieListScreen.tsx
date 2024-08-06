@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, Dimensions, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions, FlatList, ScrollView } from 'react-native';
 import axios from 'axios';
 import { useRouter } from 'expo-router';
-import Carousel from 'react-native-snap-carousel'
+import Carousel from 'react-native-snap-carousel';
 import { BASE_URL, API_KEY, MOVIE_POPULAR, URL_IMAGE } from '../../config';
 
 const { width } = Dimensions.get('window');
@@ -11,6 +11,8 @@ const itemHeight = Math.round(itemWidth * 1.5); // Adjusted for better image asp
 
 const MovieListScreen = () => {
   const [movies, setMovies] = useState([]);
+  const [comedyMovies, setComedyMovies] = useState([]);
+  const [latestMovies, setLatestMovies] = useState([]); // State for latest 2024 movies
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -18,11 +20,14 @@ const MovieListScreen = () => {
 
   useEffect(() => {
     fetchMovies();
+    fetchComedyMovies();
+    fetchLatestMovies(); // Fetch latest 2024 movies
   }, []);
 
   const fetchMovies = async () => {
     try {
-      const response = await axios.get(`${BASE_URL}${MOVIE_POPULAR}${API_KEY}`);
+      const url = `${BASE_URL}${MOVIE_POPULAR}${API_KEY}`;
+      const response = await axios.get(url);
       setMovies(response.data.results.slice(0, 10));
       setLoading(false);
     } catch (err) {
@@ -31,48 +36,135 @@ const MovieListScreen = () => {
     }
   };
 
-  const handlePress = (id) => {
-    router.push(`/MovieDetailScreen?id=${id}`);
+  const fetchGenreId = async (genreName) => {
+    try {
+      const response = await axios.get(`${BASE_URL}genre/movie/list?${API_KEY}`);
+      const genre = response.data.genres.find(genre => genre.name === genreName);
+      return genre ? genre.id : null;
+    } catch (err) {
+      setError('Gagal memuat genre film');
+      return null;
+    }
+  };
+
+  const fetchComedyMovies = async () => {
+    try {
+      const genreId = await fetchGenreId('Comedy');
+      if (genreId) {
+        const response = await axios.get(`${BASE_URL}discover/movie?${API_KEY}&with_genres=${genreId}`);
+        setComedyMovies(response.data.results.slice(0, 10));
+      } else {
+        setError('Genre Comedy tidak ditemukan');
+      }
+    } catch (err) {
+      setError('Gagal memuat film genre Comedy');
+    }
+  };
+
+  const fetchLatestMovies = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}discover/movie?${API_KEY}&primary_release_year=2024&sort_by=release_date.desc`);
+      setLatestMovies(response.data.results.slice(0, 10));
+    } catch (err) {
+      setError('Gagal memuat film terbaru 2024');
+    }
   };
 
   const renderItem = ({ item, index }) => {
     const isActive = index === activeIndex;
-
+    const handlePress = (id) => {
+      router.push(`/MovieDetailScreen?id=${id}`);
+    };
     return (
       <TouchableOpacity onPress={() => handlePress(item.id)} style={[styles.card, isActive && styles.activeCard]}>
-        <Image source={{ uri: `${URL_IMAGE}${item.poster_path}` }} style={[styles.image, isActive && styles.activeImage]} />
-        <Text style={[styles.title, isActive && styles.activeTitle]}>{item.title}</Text>
-        <Text style={[styles.rating, isActive && styles.activeRating]}>Rating: {item.vote_average}</Text>
+        <Image 
+          source={{ uri: `${URL_IMAGE}${item.poster_path}` }} 
+          style={[styles.image, isActive && styles.activeImage]}
+        />
+        <View style={styles.textContainer}>
+          <Text style={[styles.title, isActive && styles.activeTitle]}>{item.title}</Text>
+          <Text style={[styles.rating, isActive && styles.activeRating]}>Rating: {item.vote_average}</Text>
+        </View>
       </TouchableOpacity>
     );
   };
 
+  const renderComedyItem = ({ item }) => (
+    <TouchableOpacity style={styles.card1}>
+      <Image 
+        source={{ uri: `${URL_IMAGE}${item.poster_path}` }} 
+        style={styles.image1}
+      />
+      <View style={styles.textContainer1}>
+        <Text style={styles.title1}>{item.title}</Text>
+        <Text style={styles.rating1}>Rating: {item.vote_average}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+
+  const renderLatestItem = ({ item }) => (
+    <TouchableOpacity style={styles.card1}>
+      <Image 
+        source={{ uri: `${URL_IMAGE}${item.poster_path}` }} 
+        style={styles.image1}
+      />
+      <View style={styles.textContainer1}>
+        <Text style={styles.title1}>{item.title}</Text>
+        <Text style={styles.rating1}>Rating: {item.vote_average}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Text style={styles.header}>NONTONKUSOCA</Text>
       {loading ? (
         <Text style={styles.loading}>Memuat...</Text>
       ) : error ? (
         <Text style={styles.error}>{error}</Text>
       ) : (
-        <Carousel
-          data={movies}
-          renderItem={renderItem}
-          sliderWidth={width}
-          itemWidth={itemWidth}
-          onSnapToItem={(index) => setActiveIndex(index)}
-          inactiveSlideScale={0.8}
-          inactiveSlideOpacity={0.7}
-        />
+        <>
+          <Carousel
+            data={movies}
+            renderItem={renderItem}
+            sliderWidth={width}
+            itemWidth={itemWidth}
+            onSnapToItem={(index) => setActiveIndex(index)}
+            inactiveSlideScale={0.8}
+            inactiveSlideOpacity={0.7}
+            firstItem={3}
+          />
+          <Text style={styles.subHeader}>Film Genre Comedy</Text>
+          <FlatList
+            data={comedyMovies}
+            renderItem={renderComedyItem}
+            keyExtractor={(item) => item.id.toString()}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.flatListContent}
+          />
+          <Text style={styles.subHeader}>Film Terbaru 2024</Text>
+          <FlatList
+            data={latestMovies}
+            renderItem={renderLatestItem}
+            keyExtractor={(item) => item.id.toString()}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.flatListContent}
+          />
+          <View >
+            <Text style={styles.subHeader}>Asu</Text>
+          </View>
+        </>
       )}
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#d3d3d3',
+    flex: 5,
+    backgroundColor: '#192931', // Background color black
     paddingTop: 20,
   },
   header: {
@@ -81,63 +173,132 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     marginBottom: 20,
     marginTop: 30,
-    color: '#000000',
+    color: '#a3b5bd', // Soft white color for a subtle look
     marginLeft: 20,
+    textShadowColor: '#333', // Dark shadow color
+    textShadowOffset: { width: 1, height: 1 }, // Shadow offset
+    textShadowRadius: 4, // Shadow blur radius
   },
   loading: {
     fontSize: 18,
     textAlign: 'center',
     marginTop: 20,
+    color: '#FFFFFF', // White text
   },
   error: {
     fontSize: 18,
-    color: 'red',
+    color: '#FFFFFF', // White text
     textAlign: 'center',
     marginTop: 20,
   },
   card: {
-    backgroundColor: 'white',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Transparent background
     borderRadius: 8,
     padding: 15,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 2, height: 2 },
-    shadowOpacity: 0.5,
+    shadowOpacity: 0.4,
     shadowRadius: 4,
     elevation: 10,
   },
   activeCard: {
-    color: '#fff',
-    fontWeight: 'bold',
+    borderColor: '#000000', // Border for active card
+    borderWidth: 1,
   },
   image: {
-    width: itemWidth - 25,
-    height: itemHeight - 25,
+    width: itemWidth - 30,
+    height: itemHeight - 50, // Adjust height to leave space for text
     borderRadius: 8,
-    marginBottom: 8,
+    marginBottom: 10,
   },
   activeImage: {
-    width: itemWidth - 25,
-    height: itemHeight - 25,
-    
+    opacity: 1, // Full opacity for active image
   },
   title: {
     fontSize: 18,
     fontWeight: 'bold',
-    textAlign: 'center',
+    color: '#FFFFFF', // White text
   },
   activeTitle: {
     fontSize: 18,
   },
   rating: {
     fontSize: 14,
-    color: '#666',
-    textAlign: 'center',
+    textAlign:'center',
+    color: '#FFFFFF', // White text
   },
   activeRating: {
     fontSize: 14,
-    color: '#000',
+  },
+  actionItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 10,
+    marginHorizontal: 20,
+  },
+  actionImage: {
+    width: 100,
+    height: 150,
+    borderRadius: 10,
+  },
+  actionTextContainer: {
+    marginLeft: 10,
+  },
+  actionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+  },
+  actionRating: {
+    fontSize: 14,
+    color: '#FFFFFF',
+  },
+  subHeader: {
+    fontSize: 18,
+    color: '#a3b5bd',
+    marginLeft: 30,
+
+  },
+  card1: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Transparan
+    padding:8,
+    borderRadius: 8,
+    flexDirection: 'row', // Horizontal layout
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 0.4,
+    shadowRadius: 4,
+    // elevation: 10,
+    marginHorizontal: 10, // Margin horizontal untuk spacing
+    marginVertical: 10, 
+    marginEnd:10,
+    // marginTop:10,// Margin vertikal untuk spacing
+  },
+  image1: {
+    width: 85,
+    height: 125,
+    borderRadius: 10,
+    marginRight: 10, // Spacing between image and text
+  },
+  textContainer1: {
+    flex: 1, // Allows text container to use remaining space
+  },
+  title1: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#FFFFFF', // Putih
+    padding:10,
+  },
+  rating1: {
+    fontSize: 14,
+    padding:14,
+    color: '#FFFFFF', // Putih
+  },
+  flatListContent: {
+    paddingLeft: 20, // Adding padding to align with other components
   },
 });
 

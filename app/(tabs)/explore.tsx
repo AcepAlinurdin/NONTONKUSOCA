@@ -118,14 +118,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#192931', // Warna latar belakang diperbarui
   },
   header: {
     fontSize: 30,
     fontWeight: 'bold',
     marginBottom: 16,
+    color: '#a3b5bd', // Menyesuaikan warna teks header untuk kontras
   },
   input: {
+    backgroundColor: '#d6dee1',
+    shadowColor: '#000',
     height: 40,
     borderColor: '#ddd',
     borderWidth: 1,
@@ -133,7 +136,6 @@ const styles = StyleSheet.create({
     marginTop: 30,
     marginBottom:10,
     paddingHorizontal: 16,
-    backgroundColor: '#fff',
     shadowRadius:10,
   },
   row: {
@@ -143,10 +145,11 @@ const styles = StyleSheet.create({
     flex: 1,
     marginBottom: 14,
   },
+
+
   card: {
     width: cardWidth,
-    height: 280, // Fixed height for consistency
-    backgroundColor: '#fff',
+    backgroundColor: '#rgba(0, 0, 0, 0.5)',
     borderRadius: 12,
     marginBottom: 8,
     shadowColor: '#000',
@@ -155,8 +158,14 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 4,
     overflow: 'hidden',
-    justifyContent: 'space-between', // Ensure spacing between elements
   },
+
+  activeCard: {
+    borderColor: '#000000', // Border for active card
+    borderWidth: 1,
+  },
+
+
   image: {
     width: '100%',
     height: 180, // Ensure image height is consistent
@@ -167,12 +176,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between', // Space out elements evenly
   },
   title: {
-    fontSize: 15,
+    fontSize: 12,
     fontWeight: 'bold',
+    color: '#fff', // Warna teks untuk kontras dengan latar belakang gelap
   },
   rating: {
-    fontSize: 13,
-    color: '#666',
+    fontSize: 11,
+    color: '#ddd', // Warna rating untuk kontras dengan latar belakang gelap
   },
   addButton: {
     backgroundColor: '#00c0f3',
@@ -180,6 +190,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     alignItems: 'center',
     borderRadius: 8,
+    marginTop:7,
   },
   addButtonText: {
     color: '#fff',
@@ -190,13 +201,15 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: 'center',
     marginTop: 20,
+    color: '#fff', // Warna teks loading untuk kontras
   },
   error: {
     fontSize: 18,
-    color: 'red',
+    color: '#ff4d4d', // Warna merah terang untuk teks error
     textAlign: 'center',
     marginTop: 20,
   },
 });
+
 
 export default MovieListScreen;

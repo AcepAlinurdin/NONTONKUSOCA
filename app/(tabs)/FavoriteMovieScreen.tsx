@@ -6,7 +6,7 @@ import { useFocusEffect } from '@react-navigation/native'; // Import useFocusEff
 import { URL_IMAGE } from '../../config';
 
 const { width } = Dimensions.get('window');
-const cardWidth = (width - 48) / 2;
+const cardWidth = (width -30) / 1;
 
 const FavoriteMoviesScreen = () => {
   const [favorites, setFavorites] = useState([]);
@@ -62,10 +62,10 @@ const FavoriteMoviesScreen = () => {
         <View style={styles.infoContainer}>
           <Text style={styles.title}>{item.title}</Text>
           <Text style={styles.rating}>Rating: {item.vote_average}</Text>
+          <TouchableOpacity onPress={() => removeFavorite(item.id)} style={styles.removeButton}>
+            <Text style={styles.removeButtonText}>Hapus dari Favorit</Text>
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity onPress={() => removeFavorite(item.id)} style={styles.removeButton}>
-          <Text style={styles.removeButtonText}>Hapus dari Favorit</Text>
-        </TouchableOpacity>
       </TouchableOpacity>
     </View>
   );
@@ -79,8 +79,8 @@ const FavoriteMoviesScreen = () => {
         data={favorites}
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderItem}
-        numColumns={2}
-        columnWrapperStyle={styles.row}
+        // numColumns={2}
+        // columnWrapperStyle={styles.row}
       />
     </View>
   );
@@ -88,15 +88,16 @@ const FavoriteMoviesScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     padding: 16,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#192931',
+    flex: 1,
   },
   header: {
+    color: '#FFFFFF',
     fontSize: 30,
     fontWeight: 'bold',
     marginTop: 30,
-    marginBottom:10,
+    marginBottom: 10,
   },
   row: {
     justifyContent: 'space-between',
@@ -106,7 +107,7 @@ const styles = StyleSheet.create({
   },
   card: {
     width: cardWidth,
-    backgroundColor: '#fff',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     borderRadius: 12,
     marginBottom: 8,
     shadowColor: '#000',
@@ -115,18 +116,24 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 4,
     overflow: 'hidden',
+    flexDirection: 'row', // Mengatur agar konten di dalam card dalam satu baris
   },
   image: {
-    width: '100%',
-    height: 180,
+    width: '40%', // Atur lebar gambar sesuai kebutuhan
+    height: 150,
+    borderTopLeftRadius: 12,
+    borderBottomLeftRadius: 12,
   },
   infoContainer: {
+    width: '60%', // Atur lebar kontainer informasi sesuai kebutuhan
     padding: 8,
+    justifyContent: 'center', // Agar konten di tengah secara vertikal
   },
   title: {
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 4,
+    color: '#FFFFFF',
   },
   rating: {
     fontSize: 14,
@@ -134,11 +141,12 @@ const styles = StyleSheet.create({
   },
   removeButton: {
     backgroundColor: '#ff5c5c',
-  
     paddingVertical: 8,
-    
     alignItems: 'center',
-    
+    marginTop: 50,
+    marginBottom:-10,
+    padding:5,
+    borderRadius:5,
   },
   removeButtonText: {
     color: '#fff',
@@ -148,6 +156,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: 'center',
     marginTop: 20,
+    color: '#FFFFFF',
   },
   error: {
     fontSize: 18,
