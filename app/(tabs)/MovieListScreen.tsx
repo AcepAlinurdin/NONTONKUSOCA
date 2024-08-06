@@ -12,6 +12,7 @@ const itemHeight = Math.round(itemWidth * 1.5); // Adjusted for better image asp
 const MovieListScreen = () => {
   const [movies, setMovies] = useState([]);
   const [comedyMovies, setComedyMovies] = useState([]);
+  const [animatedMovies, setAnimatedMovies] = useState([]); // State for animated movies
   const [latestMovies, setLatestMovies] = useState([]); // State for latest 2024 movies
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -21,6 +22,7 @@ const MovieListScreen = () => {
   useEffect(() => {
     fetchMovies();
     fetchComedyMovies();
+    fetchAnimatedMovies(); // Fetch animated movies
     fetchLatestMovies(); // Fetch latest 2024 movies
   }, []);
 
@@ -58,6 +60,20 @@ const MovieListScreen = () => {
       }
     } catch (err) {
       setError('Gagal memuat film genre Comedy');
+    }
+  };
+
+  const fetchAnimatedMovies = async () => {
+    try {
+      const genreId = await fetchGenreId('Animation'); // Fetch genre ID for Animation
+      if (genreId) {
+        const response = await axios.get(`${BASE_URL}discover/movie?${API_KEY}&with_genres=${genreId}`);
+        setAnimatedMovies(response.data.results.slice(0, 10));
+      } else {
+        setError('Genre Animation tidak ditemukan');
+      }
+    } catch (err) {
+      setError('Gagal memuat film genre Animation');
     }
   };
 
@@ -102,6 +118,19 @@ const MovieListScreen = () => {
     </TouchableOpacity>
   );
 
+  const renderAnimatedItem = ({ item }) => (
+    <TouchableOpacity style={styles.card1}>
+      <Image 
+        source={{ uri: `${URL_IMAGE}${item.poster_path}` }} 
+        style={styles.image1}
+      />
+      <View style={styles.textContainer1}>
+        <Text style={styles.title1}>{item.title}</Text>
+        <Text style={styles.rating1}>Rating: {item.vote_average}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+
   const renderLatestItem = ({ item }) => (
     <TouchableOpacity style={styles.card1}>
       <Image 
@@ -133,6 +162,15 @@ const MovieListScreen = () => {
             inactiveSlideScale={0.8}
             inactiveSlideOpacity={0.7}
             firstItem={3}
+          /> 
+          <Text style={styles.subHeader}>Film Terbaru 2024</Text>
+          <FlatList
+            data={latestMovies}
+            renderItem={renderLatestItem}
+            keyExtractor={(item) => item.id.toString()}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.flatListContent}
           />
           <Text style={styles.subHeader}>Film Genre Comedy</Text>
           <FlatList
@@ -143,10 +181,10 @@ const MovieListScreen = () => {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.flatListContent}
           />
-          <Text style={styles.subHeader}>Film Terbaru 2024</Text>
+          <Text style={styles.subHeader}>Film Genre Animation</Text>
           <FlatList
-            data={latestMovies}
-            renderItem={renderLatestItem}
+            data={animatedMovies}
+            renderItem={renderAnimatedItem}
             keyExtractor={(item) => item.id.toString()}
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -163,8 +201,8 @@ const MovieListScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 5,
-    backgroundColor: '#192931', // Background color black
+    flex: 1, // Use full height
+    backgroundColor: '#1d1d1d', // Background color black
     paddingTop: 20,
   },
   header: {
@@ -173,7 +211,7 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     marginBottom: 20,
     marginTop: 30,
-    color: '#a3b5bd', // Soft white color for a subtle look
+    color: '#c1c1c1', // Soft white color for a subtle look
     marginLeft: 20,
     textShadowColor: '#333', // Dark shadow color
     textShadowOffset: { width: 1, height: 1 }, // Shadow offset
@@ -204,7 +242,7 @@ const styles = StyleSheet.create({
     elevation: 10,
   },
   activeCard: {
-    borderColor: '#000000', // Border for active card
+    borderColor: '#5d5d5d', // Border for active card
     borderWidth: 1,
   },
   image: {
@@ -257,25 +295,23 @@ const styles = StyleSheet.create({
   },
   subHeader: {
     fontSize: 18,
-    color: '#a3b5bd',
+    color: '#c1c1c1',
     marginLeft: 30,
-
   },
   card1: {
     backgroundColor: 'rgba(0, 0, 0, 0.5)', // Transparan
-    padding:8,
+    padding: 8,
     borderRadius: 8,
     flexDirection: 'row', // Horizontal layout
     alignItems: 'center',
-    shadowColor: '#000',
     shadowOffset: { width: 2, height: 2 },
     shadowOpacity: 0.4,
     shadowRadius: 4,
-    // elevation: 10,
+    // borderColor: '#5d5d5d', // Border color putih
+    borderWidth: 1, // Width border putih
     marginHorizontal: 10, // Margin horizontal untuk spacing
     marginVertical: 10, 
-    marginEnd:10,
-    // marginTop:10,// Margin vertikal untuk spacing
+
   },
   image1: {
     width: 85,

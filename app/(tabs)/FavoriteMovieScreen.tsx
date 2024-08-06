@@ -89,11 +89,11 @@ const FavoriteMoviesScreen = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    backgroundColor: '#192931',
+    backgroundColor: '#1d1d1d',
     flex: 1,
   },
   header: {
-    color: '#FFFFFF',
+    color: '#c1c1c1',
     fontSize: 30,
     fontWeight: 'bold',
     marginTop: 30,
@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   removeButton: {
-    backgroundColor: '#ff5c5c',
+    backgroundColor: '#ca1c1c',
     paddingVertical: 8,
     alignItems: 'center',
     marginTop: 50,

@@ -118,16 +118,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#192931', // Warna latar belakang diperbarui
+    backgroundColor: '#1d1d1d', // Warna latar belakang diperbarui
   },
   header: {
     fontSize: 30,
     fontWeight: 'bold',
     marginBottom: 16,
-    color: '#a3b5bd', // Menyesuaikan warna teks header untuk kontras
+    color: '#c1c1c1', // Menyesuaikan warna teks header untuk kontras
   },
   input: {
-    backgroundColor: '#d6dee1',
+    backgroundColor: '#808080',
     shadowColor: '#000',
     height: 40,
     borderColor: '#ddd',
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
     color: '#ddd', // Warna rating untuk kontras dengan latar belakang gelap
   },
   addButton: {
-    backgroundColor: '#00c0f3',
+    backgroundColor: '#0025bb',
     paddingVertical: 6,
     paddingHorizontal: 15,
     alignItems: 'center',
