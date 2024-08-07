@@ -172,7 +172,7 @@ const MovieListScreen = () => {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.flatListContent}
           />
-          <Text style={styles.subHeader}>Film Genre Comedy</Text>
+          <Text style={styles.subHeader}>Film Comedy</Text>
           <FlatList
             data={comedyMovies}
             renderItem={renderComedyItem}
@@ -181,7 +181,7 @@ const MovieListScreen = () => {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.flatListContent}
           />
-          <Text style={styles.subHeader}>Film Genre Animation</Text>
+          <Text style={styles.subHeader}>Film Animation</Text>
           <FlatList
             data={animatedMovies}
             renderItem={renderAnimatedItem}
@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1, // Use full height
     backgroundColor: '#1d1d1d', // Background color black
-    paddingTop: 20,
+    paddingTop: 30,
   },
   header: {
     fontSize: 28,

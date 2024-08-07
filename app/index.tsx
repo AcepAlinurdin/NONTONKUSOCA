@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ImageBackground, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, ActivityIndicator, Animated } from 'react-native';
 import axios from 'axios';
-import { Link } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { BASE_URL, API_KEY, MOVIE_POPULAR, URL_IMAGE, LANGUAGE } from '../config';
 
 export default function HomeScreen() {
     const [backgroundImage, setBackgroundImage] = useState('');
     const [error, setError] = useState(null);
-    
+    const [loading, setLoading] = useState(true);
+    const [fadeAnim] = useState(new Animated.Value(0)); // Inisialisasi animasi opacity
+    const router = useRouter();
+
     useEffect(() => {
         const fetchBackgroundImage = async () => {
             try {
@@ -20,11 +23,29 @@ export default function HomeScreen() {
             } catch (error) {
                 setError('Gagal memuat gambar latar belakang');
                 console.error('Gagal memuat gambar latar belakang', error);
+            } finally {
+                setLoading(false);
             }
         };
 
         fetchBackgroundImage();
     }, []);
+
+    useEffect(() => {
+        if (!loading && !error) {
+            // Animasi fade in untuk teks
+            Animated.timing(fadeAnim, {
+                toValue: 1,
+                duration: 7000,
+                useNativeDriver: true,
+            }).start(() => {
+                // Pindah ke MovieListScreen setelah animasi selesai
+                setTimeout(() => {
+                    router.push('MovieListScreen');
+                }, 500); // Delay sedikit sebelum pindah halaman
+            });
+        }
+    }, [loading, error, router, fadeAnim]);
 
     return (
         <ImageBackground 
@@ -32,17 +53,14 @@ export default function HomeScreen() {
             style={styles.container}
         >
             <View style={styles.overlay}>
-                {error ? (
+                {loading ? (
+                    <ActivityIndicator size="large" color="#ffffff" />
+                ) : error ? (
                     <Text style={styles.error}>{error}</Text>
                 ) : (
-                    <>
-                        {/* <Text style={styles.title}>Home</Text> */}
-                        <TouchableOpacity style={styles.button}>
-                            <Link href="MovieListScreen" style={styles.buttonText}>
-                                NONTONKUSOCA
-                            </Link>
-                        </TouchableOpacity>
-                    </>
+                    <Animated.View style={{ ...styles.animatedTextContainer, opacity: fadeAnim }}>
+                        <Text style={styles.animatedText}>NONTONKUSOCA</Text>
+                    </Animated.View>
                 )}
             </View>
         </ImageBackground>
@@ -62,29 +80,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  title: {
+  animatedTextContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  animatedText: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 20,
-  },
-  button: {
-    backgroundColor: 'transparent', // Mengatur latar belakang tombol menjadi transparan
-    borderRadius: 8,
-    borderWidth: 3, // Ketebalan border
-    borderColor: '#192931', // Warna border
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    alignItems: 'center',
-    elevation: 0,
-    shadowRadius:20,
-    shadowColor: '#000',
-    
-    shadowOpacity:0, // Jika Anda menggunakan Android, ini menambahkan efek bayangan
-  },
-  buttonText: {
-    color: '#192931', // Warna teks tombol
-    fontWeight: 'bold',
+    color: '#ffffff',
+    textShadowColor: '#000',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 4,
   },
   error: {
     color: 'red',

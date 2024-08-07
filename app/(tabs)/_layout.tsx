@@ -10,7 +10,11 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: '#DDDDDD', // Warna hitam untuk ikon yang aktif
+        tabBarInactiveTintColor: '#747474', // Warna putih untuk ikon yang tidak aktif
+        tabBarStyle: {
+          backgroundColor: '#1d1d1d', // Warna abu-abu untuk tab bar
+        },
         headerShown: false, // Menyembunyikan header di tab navigation
       }}
     >
@@ -26,7 +30,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="explore"
         options={{
-          title: 'explore',
+          title: 'Search',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'search' : 'search-outline'} color={color} />
           ),
