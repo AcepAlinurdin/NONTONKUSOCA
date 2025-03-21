@@ -1,3 +1,23 @@
+# React Native Movie App
+
+Aplikasi Android berbasis React Native yang menggunakan API TMDB untuk menampilkan informasi film dan acara TV. Aplikasi ini memungkinkan pengguna untuk melihat daftar film populer, mencari film, dan melihat detail film termasuk sinopsis, rating, serta poster.
+
+## Teknologi yang Digunakan
+- **React Native**: Framework utama untuk pengembangan aplikasi mobile.
+- **Axios**: Untuk melakukan komunikasi dengan API TMDB.
+- **TMDB API**: Sumber data utama untuk film dan acara TV.
+- **React Navigation**: Untuk navigasi antar halaman dalam aplikasi.
+- **State Management**: Menggunakan React Hooks atau Redux (opsional).
+
+## Fitur Utama
+- Menampilkan daftar film populer.
+- Pencarian film berdasarkan judul.
+- Detail film (poster, sinopsis, rating, tanggal rilis).
+- Navigasi antar halaman menggunakan React Navigation.
+- Tampilan yang responsif dan user-friendly.
+
+
+
 # Welcome to your Expo app 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
